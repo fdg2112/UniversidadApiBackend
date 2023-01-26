@@ -13,6 +13,7 @@ namespace UniversidadApiBackend.Models.DataModels
         public DateTime UpdateAt { get; set; } = DateTime.Now;
         public string DeleteBy { get; set; } = string.Empty;
         public DateTime DeleteAt { get; set; } = DateTime.Now;
+        public bool IsDeleted { get; set; } = false;
 
     }
 }
