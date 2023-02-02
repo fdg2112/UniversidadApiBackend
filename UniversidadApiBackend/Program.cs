@@ -15,13 +15,20 @@ var conectionString = builder.Configuration.GetConnectionString(CONNECTIONNAME);
 // 3.Agregar contexto a servicios del constructor
 builder.Services.AddDbContext<UniversityDBContext>(options => options.UseSqlServer(conectionString));
 
+// 7. Agregar servicios JWT
+// TO DO
+// builder.Services.AddJwtTokenServices(builder.Configuration);
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(); // 8. TO DO: Configurar Swagger para que tenga en cuenta la autenticación
 
 // 4. Añadir servicios creados
 builder.Services.AddScoped<IStudentsService, StudentsService>();
+// TO DO: Agregar el resto de los servicios
+
+
 
 
 // 5. Configurar CORS
