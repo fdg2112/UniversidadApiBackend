@@ -1,6 +1,8 @@
 // 1.Usings para trabajar con entity framework
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using UniversidadApiBackend;
 using UniversidadApiBackend.DataAccess;
 using UniversidadApiBackend.Services;
 
@@ -16,20 +18,53 @@ var conectionString = builder.Configuration.GetConnectionString(CONNECTIONNAME);
 builder.Services.AddDbContext<UniversityDBContext>(options => options.UseSqlServer(conectionString));
 
 // 7. Agregar servicios JWT
-// TO DO
-// builder.Services.AddJwtTokenServices(builder.Configuration);
+builder.Services.AddJwtTokenServices(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // 8. TO DO: Configurar Swagger para que tenga en cuenta la autenticación
+// 9. Configurar Swagger para que tenga en cuenta la autenticación
+builder.Services.AddSwaggerGen(options =>
+{
+    // Definimos la seguridad
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization using Bearer Scheme"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+}); 
 
 // 4. Añadir servicios creados
 builder.Services.AddScoped<IStudentsService, StudentsService>();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<IChaptersService, ChaptersService>();
+builder.Services.AddScoped<ICoursesService, CoursesService>();
 // TO DO: Agregar el resto de los servicios
 
-
-
+// 8. Agregar política de autorizacion
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserOnlyPolicy", policy => policy.RequireClaim("UserOnly","User1"));
+});
 
 // 5. Configurar CORS
 builder.Services.AddCors( options =>

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using UniversidadApiBackend.DataAccess;
 using UniversidadApiBackend.Helpers;
 using UniversidadApiBackend.Models.DataModels;
 
@@ -11,30 +13,35 @@ namespace UniversidadApiBackend.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly UniversityDBContext _context;
+
         private readonly JwtSettings _jwtSettings;
 
-        public AccountController(JwtSettings jwtSettings)
+        public AccountController(UniversityDBContext context, JwtSettings jwtSettings)
         {
+            _context = context;
             _jwtSettings= jwtSettings;
         }
 
-        private IEnumerable<User> Logins = new List<User>()
-        {
-            new User()
-            {
-                Id= 1,
-                EmailAddress = "fdg@gmail.com",
-                Name = "Admin",
-                Password = "admin"
-            },
-            new User()
-            {
-                Id= 2,
-                EmailAddress = "2112@gmail.com",
-                Name = "User1",
-                Password = "user1"
-            }
-        };
+
+        // TO DO: cambiar por usuarios reales
+        //private IEnumerable<User> Logins = new List<User>()
+        //{
+        //    new User()
+        //    {
+        //        Id= 1,
+        //        EmailAddress = "fdg@gmail.com",
+        //        Name = "Admin",
+        //        Password = "admin"
+        //    },
+        //    new User()
+        //    {
+        //        Id= 2,
+        //        EmailAddress = "2112@gmail.com",
+        //        Name = "User1",
+        //        Password = "user1"
+        //    }
+        //};
 
         [HttpPost]
         public IActionResult GetToken(UserLogins userLogin)
@@ -42,15 +49,20 @@ namespace UniversidadApiBackend.Controllers
             try
             {
                 var Token = new UserTokens();
-                var Valid = Logins.Any(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
-                if (Valid)
+
+                var searchedUser = (from user in _context.Users
+                                    where user.Name == userLogin.UserName && user.Password == userLogin.Password
+                                    select user).FirstOrDefault();
+
+                //var Valid = Logins.Any(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
+                if (searchedUser != null)
                 {
-                    var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
+                    //var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
                     Token = JwtHelpers.GenTokenKey(new UserTokens()
                     {
-                        Id = user.Id,
-                        UserName = user.Name,
-                        EmailId = user.EmailAddress,
+                        Id = searchedUser.Id,
+                        UserName = searchedUser.Name,
+                        EmailId = searchedUser.EmailAddress,
                         GuidId = Guid.NewGuid()
                     }, _jwtSettings);
                 } else
@@ -66,9 +78,9 @@ namespace UniversidadApiBackend.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
-        public IActionResult GetUserList()
+        public async Task<ActionResult<IEnumerable<User>>> GetUserList()
         {
-            return Ok(Logins);
+            return await _context.Users.ToListAsync();
         }
 
     }
