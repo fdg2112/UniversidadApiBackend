@@ -19,19 +19,24 @@ namespace UniversidadApiBackend.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly UniversityDBContext _context;
-
+        private readonly ILogger<CategoriesController> _logger;
         private readonly ICategoriesService _categoriesService;
 
-        public CategoriesController(UniversityDBContext context, ICategoriesService categoriesService)
+        public CategoriesController(UniversityDBContext context, ICategoriesService categoriesService, ILogger<CategoriesController> logger)
         {
             _context = context;
             _categoriesService = categoriesService;
+            _logger = logger;
         }
 
         // GET: api/Categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetCategories)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetCategories)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetCategories)} - Critical Level Log");
+
             return await _context.Categories.ToListAsync();
         }
 
@@ -39,6 +44,9 @@ namespace UniversidadApiBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetCategory)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetCategory)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetCategory)} - Critical Level Log");
             var category = await _context.Categories.FindAsync(id);
 
             if (category == null)
@@ -55,6 +63,10 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PutCategory)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PutCategory)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PutCategory)} - Critical Level Log");
+
             if (id != category.Id)
             {
                 return BadRequest();
@@ -87,6 +99,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PostCategory)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PostCategory)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PostCategory)} - Critical Level Log");
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
@@ -98,6 +113,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(DeleteCategory)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(DeleteCategory)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(DeleteCategory)} - Critical Level Log");
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {

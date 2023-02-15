@@ -19,19 +19,23 @@ namespace UniversidadApiBackend.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly UniversityDBContext _context;
-
+        private readonly ILogger<CoursesController> _logger;
         private readonly ICoursesService _coursesService;
 
-        public CoursesController(UniversityDBContext context, ICoursesService coursesService)
+        public CoursesController(UniversityDBContext context, ICoursesService coursesService, ILogger<CoursesController> logger)
         {
             _context = context;
             _coursesService = coursesService;
+            _logger = logger;
         }
 
         // GET: api/Courses
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetCourses)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetCourses)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetCourses)} - Critical Level Log");
             return await _context.Courses.ToListAsync();
         }
 
@@ -55,6 +59,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> PutCourse(int id, Course course)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PutCourse)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PutCourse)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PutCourse)} - Critical Level Log");
             if (id != course.Id)
             {
                 return BadRequest();
@@ -87,6 +94,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<ActionResult<Course>> PostCourse(Course course)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PostCourse)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PostCourse)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PostCourse)} - Critical Level Log");
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
@@ -98,6 +108,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(DeleteCourse)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(DeleteCourse)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(DeleteCourse)} - Critical Level Log");
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
             {

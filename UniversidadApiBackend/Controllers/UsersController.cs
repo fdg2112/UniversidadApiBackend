@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversidadApiBackend.DataAccess;
 using UniversidadApiBackend.Models.DataModels;
+using UniversityApiBackend.Controllers;
 
 namespace UniversidadApiBackend.Controllers
 {
@@ -18,16 +19,21 @@ namespace UniversidadApiBackend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UniversityDBContext _context;
-
-        public UsersController(UniversityDBContext context)
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(UniversityDBContext context, ILogger<UsersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetUsers)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetUsers)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetUsers)} - Critical Level Log");
+
             return await _context.Users.ToListAsync();
         }
 
@@ -35,6 +41,10 @@ namespace UniversidadApiBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetUser)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetUser)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetUser)} - Critical Level Log");
+
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -51,6 +61,10 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PutUser)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PutUser)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PutUser)} - Critical Level Log");
+
             if (id != user.Id)
             {
                 return BadRequest();
@@ -83,6 +97,10 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PostUser)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PostUser)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PostUser)} - Critical Level Log");
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
@@ -94,6 +112,10 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> DeleteUser(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(DeleteUser)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(DeleteUser)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(DeleteUser)} - Critical Level Log");
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {

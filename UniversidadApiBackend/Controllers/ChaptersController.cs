@@ -19,19 +19,23 @@ namespace UniversidadApiBackend.Controllers
     public class ChaptersController : ControllerBase
     {
         private readonly UniversityDBContext _context;
-
+        private readonly ILogger<ChaptersController> _logger;
         private readonly IChaptersService _chaptersService;
 
-        public ChaptersController(UniversityDBContext context, IChaptersService chaptersService)
+        public ChaptersController(UniversityDBContext context, IChaptersService chaptersService, ILogger<ChaptersController> logger)
         {
             _context = context;
             _chaptersService = chaptersService;
+            _logger = logger;
         }
 
         // GET: api/Chapters
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Chapter>>> GetChapters()
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetChapters)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetChapters)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetChapters)} - Critical Level Log");
             return await _context.Chapters.ToListAsync();
         }
 
@@ -39,6 +43,9 @@ namespace UniversidadApiBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Chapter>> GetChapter(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(GetChapters)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(GetChapters)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(GetChapters)} - Critical Level Log");
             var chapter = await _context.Chapters.FindAsync(id);
 
             if (chapter == null)
@@ -55,6 +62,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> PutChapter(int id, Chapter chapter)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PutChapter)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PutChapter)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PutChapter)} - Critical Level Log");
             if (id != chapter.Id)
             {
                 return BadRequest();
@@ -87,6 +97,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<ActionResult<Chapter>> PostChapter(Chapter chapter)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(PostChapter)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(PostChapter)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(PostChapter)} - Critical Level Log");
             _context.Chapters.Add(chapter);
             await _context.SaveChangesAsync();
 
@@ -98,6 +111,9 @@ namespace UniversidadApiBackend.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> DeleteChapter(int id)
         {
+            _logger.LogWarning($"{nameof(UsersController)} - {nameof(DeleteChapter)} - Warning Level Log");
+            _logger.LogError($"{nameof(UsersController)} - {nameof(DeleteChapter)} - Error Level Log");
+            _logger.LogCritical($"{nameof(UsersController)} - {nameof(DeleteChapter)} - Critical Level Log");
             var chapter = await _context.Chapters.FindAsync(id);
             if (chapter == null)
             {

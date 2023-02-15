@@ -7,11 +7,11 @@ namespace UniversidadApiBackend.Services
     public class Services
     {
         //Buscar usuarios por email
-        public static void SearchUserById(string email)
+        public static void SearchUserByEmail(string email)
         {
             var users = new List<User>();
 
-            var searchUserByEmail = users.FirstOrDefault(searched => searched.Equals(email));
+            var searchUserByEmail = users.FirstOrDefault(searched => searched.EmailAddress.Equals(email));
         }
 
         //Buscar alumnos mayores de edad
@@ -19,7 +19,7 @@ namespace UniversidadApiBackend.Services
         {
             var students = new List<Student>();
 
-            var studentsOver18 = students.Any(student => student.Dob.Year <= (DateTime.Today.Year-18));
+            var studentsOver18 = students.FindAll(student => student.Dob.Year <= (DateTime.Today.Year-18));
         }
 
         //Buscar alumnos que tengan al menos un curso
@@ -27,7 +27,7 @@ namespace UniversidadApiBackend.Services
         {
             var students = new List<Student>();
 
-            var studentsOver18 = students.Any(student => student.Courses.Any());
+            var studentsOver18 = students.Where(student => student.Courses.Any());
         }
 
         //Buscar cursos de un nivel determinado que al menos tengan un alumno inscrito
@@ -35,7 +35,7 @@ namespace UniversidadApiBackend.Services
         {
             var courses = new List<Course>();
 
-            var searchUserByEmail = courses.Where(course => course.Students.Count > 0).Any(course => course.Level.Equals(level));
+            var searchUserByEmail = courses.FindAll(course => course.Students.Count > 0 && course.Level.Equals(level));
         }
 
         //Buscar cursos de un nivel determinado que sean de una categoría determinada
@@ -43,7 +43,7 @@ namespace UniversidadApiBackend.Services
         {
             var courses = new List<Course>();
 
-            var searchUserByEmail = courses.Where(course => course.Level.Equals(level)).Where(course => course.Categories.Equals(category));
+            var searchUserByEmail = courses.Where(course => course.Level.Equals(level) && course.Categories.Equals(category));
         }
 
         //Buscar cursos sin alumnos
@@ -51,7 +51,7 @@ namespace UniversidadApiBackend.Services
         {
             var courses = new List<Course>();
 
-            var searchUserByEmail = courses.Any(course => course.Students.Count == 0);
+            var searchUserByEmail = courses.FindAll(course => course.Students.Count == 0);
         }
 
 

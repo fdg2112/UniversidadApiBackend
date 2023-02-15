@@ -6,7 +6,19 @@ using UniversidadApiBackend;
 using UniversidadApiBackend.DataAccess;
 using UniversidadApiBackend.Services;
 
+// 10. Use Serilog to log events
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// 11. Configurar Serilog
+builder.Host.UseSerilog((hostBuilderCtx,loggerConf) => // hostBuilderCtx es el contexto, loggerConf on las configuraciones
+{
+    loggerConf
+        .WriteTo.Console()
+        .WriteTo.Debug()
+        .ReadFrom.Configuration(hostBuilderCtx.Configuration);
+});
 
 // 2.Conexion con SQL Server Express
 
@@ -23,6 +35,7 @@ builder.Services.AddJwtTokenServices(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 // 9. Configurar Swagger para que tenga en cuenta la autenticación
 builder.Services.AddSwaggerGen(options =>
 {
@@ -85,6 +98,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// 12. Decimos a la app que utilice serilog
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversidadApiBackend.DataAccess;
@@ -20,28 +19,8 @@ namespace UniversidadApiBackend.Controllers
         public AccountController(UniversityDBContext context, JwtSettings jwtSettings)
         {
             _context = context;
-            _jwtSettings= jwtSettings;
+            _jwtSettings = jwtSettings;
         }
-
-
-        // TO DO: cambiar por usuarios reales
-        //private IEnumerable<User> Logins = new List<User>()
-        //{
-        //    new User()
-        //    {
-        //        Id= 1,
-        //        EmailAddress = "fdg@gmail.com",
-        //        Name = "Admin",
-        //        Password = "admin"
-        //    },
-        //    new User()
-        //    {
-        //        Id= 2,
-        //        EmailAddress = "2112@gmail.com",
-        //        Name = "User1",
-        //        Password = "user1"
-        //    }
-        //};
 
         [HttpPost]
         public IActionResult GetToken(UserLogins userLogin)
@@ -54,10 +33,8 @@ namespace UniversidadApiBackend.Controllers
                                     where user.Name == userLogin.UserName && user.Password == userLogin.Password
                                     select user).FirstOrDefault();
 
-                //var Valid = Logins.Any(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
                 if (searchedUser != null)
                 {
-                    //var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
                     Token = JwtHelpers.GenTokenKey(new UserTokens()
                     {
                         Id = searchedUser.Id,
@@ -65,12 +42,14 @@ namespace UniversidadApiBackend.Controllers
                         EmailId = searchedUser.EmailAddress,
                         GuidId = Guid.NewGuid()
                     }, _jwtSettings);
-                } else
+                }
+                else
                 {
                     return BadRequest("Wrong Credentials");
                 }
                 return Ok(Token);
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("GetToken Error", ex);
             }
